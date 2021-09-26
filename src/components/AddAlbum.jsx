@@ -1,4 +1,4 @@
-import {useState } from "react";
+import {useState,useRef } from "react";
 import Album from "./Album"
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
@@ -18,54 +18,94 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 
 
-export default function AddAlbum() {
+export default function AddAlbum(props) {
  
-const [album_cover,  setFile] = useState([])
-   
+
+   const fileInputRef = useRef();
+  const { data, setAlbums } = props;
+  const [artist, setArtist] = useState("");
+  const [albumeName, setAlbumName] = useState("");
+  const [albumCover, setAlbumCover] = useState("");
+
+  const onSelectFile = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files.length > 0) {
+      if (e.target.files.length > 0) {
+        setAlbumCover(URL.createObjectURL(e.target.files[0]));
+      }
+    }
+  };
+
+  const onsubmit = (e) => {
+    e.preventDefault();
+    setAlbums([
+      ...data,
+
+      {
+        id: new Date().getTime().toString(),
+        artist: artist,
+        album_title: albumeName,
+        album_cover: albumCover,
+      },
+    ]);
+    setArtist("");
+    setAlbumName("");
+    setAlbumCover("");
+  };
+
   
-     
-     const handleChange = (e) =>{
-          setFile([...album_cover, URL.createObjectURL(e.target.files[0])]);
-}
-
-
-
-  function deleteFile(e) {
-    const s =album_cover.filter((item, index) => index !== e);
-    setFile(s);
    
-  }
 
+
+ 
   return (
     
      <>
       <div>
-        <form >
+        <form onSubmit={(e) => {
+          onsubmit(e);
+        }} >
         <h1 style={{color:'white',marginRight:200}}>Add Albums</h1>
+        <label style={{color:'white',marginRight:200}}>Album Title </label>
+        <input
+          type="text"
+          value={albumeName}
+          onChange={(e) => {
+            setAlbumName(e.target.value);
+          }}
+          required
+        ></input>
+        <br />
+        <br />
+        <label style={{color:'white',marginRight:200}}>Atrist Name </label>
+        <input
+          type="text"
+          value={artist}
+          onChange={(e) => {
+            setArtist(e.target.value);
+          }}
+          required
+        ></input>
            <input
            margin="normal"
-         type="file" onChange={handleChange} />
+         type="file"  ref={fileInputRef}
+          onChange={(e) => {
+            onSelectFile(e);
+          }}
+          required />
+          <br />
+        {albumCover && <img src={albumCover} alt="image1" style={{height:200,width:200}} />}
+
+        <br />
+        <br />
+        <button>Submit</button>
           </form>
           </div>
        <div >
     <br/><br/>
     
      <br/>
-     <Grid container spacing={5}>
-       {album_cover.length > 0 &&
-         album_cover.map((albumData,index) =>
-          <Grid item
-              xs={12}
-              sm={3}
-              style={{ marginLeft: 'auto', alignItems: 'center' }}>
-           <Album data={albumData} key={index}/>
-           <Button variant="contained" color="primary" onClick={() => deleteFile(index)}>
-       delete
-      </Button>
-           </Grid>
-           )}
      
-    </Grid>
     </div>
    </>
   );
