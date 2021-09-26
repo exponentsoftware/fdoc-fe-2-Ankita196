@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection:"row"
   },
   paper: {
-    height:360,
+    height:340,
     width:270,
     backgroundColor:"#212121",
    padding:10
@@ -51,11 +52,11 @@ const useStyles = makeStyles((theme) => ({
   
 }));
 
-export default function Album({data}) {
+export default function Album(props) {
  
   const classes = useStyles();
 
-  
+  const deleteAlbum= props.deleteAlbum
 
   return (
     <Grid container className={classes.root} spacing={2}>
@@ -66,7 +67,7 @@ export default function Album({data}) {
              <Paper
        className={classes.image}
         style={{
-          backgroundImage: `url('${data}')`,
+          backgroundImage: `url('${props?.data?.album_cover}')`,
         backgroundSize:'100% 100%',marginTop:30
         }}
       >   <IconButton >
@@ -75,10 +76,11 @@ export default function Album({data}) {
               </Paper>
               
                     <br/>
-                  <Typography className={classes.album}>Rockstar</Typography>
-                  <Typography className={classes.name}>A. r.Rahman</Typography>
+                  <Typography className={classes.album}>{props?.data?.album_title}</Typography>
+                  <Typography className={classes.name}>{props?.data?.artist}</Typography>
             
               </Paper>  
+              
       </Grid>
     </Grid>
   );
